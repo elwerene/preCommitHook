@@ -1,0 +1,29 @@
+#!/bin/sh
+
+function EXT_COLOR () {
+    echo "\033[38;5;$1m";
+}
+NO_COLOR="\033[0m";
+
+if [ ! -d '.git' ]; then
+    echo "$(EXT_COLOR 196)git folder not found!$NO_COLOR";
+    exec false;
+fi
+
+if [ ! -d '.git/hooks' ]; then
+    echo "$(EXT_COLOR 196)githooks folder not found!$NO_COLOR";
+    exec false;
+fi
+
+if [ -e '.git/hooks/pre-commit' ]; then
+    echo "$(EXT_COLOR 196)There's already a pre-commit hook installed!$NO_COLOR";
+    echo "$(EXT_COLOR 202)Please remove first:$NO_COLOR $(pwd)/.git/hooks/pre-commit";
+    exec false;
+fi
+
+script="{{BASE64}}"
+
+echo $script | base64 -D > .git/hooks/pre-commit
+chmod +x .git/hooks/pre-commit
+
+echo "Installed git hook"
