@@ -6,7 +6,7 @@ function EXT_COLOR () {
 NO_COLOR="\033[0m";
 
 if [[ $(uname) != 'Darwin' ]]; then
-    echo "$(EXT_COLOR 202)Warning: git pre-commit hook not yet tested on $(uname)!$NO_COLOR"
+    echo "$(EXT_COLOR 202)Warning: git pre-commit hook not yet tested on $(uname)!$NO_COLOR";
 fi
 
 jshint=$(which jshint);
@@ -15,26 +15,29 @@ if [[ -z $jshint ]]; then
     exec false
 fi
 
-stop=false;
+stopCommit=false;
 function error {
-    echo "$(EXT_COLOR 242)$1:\t$(EXT_COLOR 196)$2$NO_COLOR"
-    stop=true;
+    echo "$(EXT_COLOR 242)$1:\t$(EXT_COLOR 196)$2$NO_COLOR";
 }
 
-git diff --cached --name-only --diff-filter=ACM | while read file; do
-    tabs=$(grep $'\t' "$file"|wc -l|awk {'print $1'});
-    if [[ $tabs -ne '0' ]]; then
-        error "$file" "$tabs lines with tabs";
+while read file; do
+    if [[ ${file##*.} != "plist" && ${file##*.} != "zip"  && ${file##*.} != "mobileprovision" ]]; then
+        tabs=$(grep $'\t' "$file"|wc -l|awk {'print $1'});
+        if [[ $tabs -ne '0' ]]; then
+            error "$file" "$tabs lines with tabs";
+            stopCommit=true;
+        fi
     fi
 
     if [[ ${file##*.} == "js" ]]; then
         jsvalid=$($jshint "$file" |tail -n 1);
         if [[ -n "$jsvalid" ]]; then
             error "$file" "contains invalid javascript code ($jsvalid)";
+            stopCommit=true;
         fi
     fi
-done
+done <<< $(git diff --cached --name-only --diff-filter=ACM);
 
-if [[ $stop == true ]]; then
-    exec false
+if [[ $stopCommit == true ]]; then
+    exec false;
 fi
