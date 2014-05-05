@@ -36,6 +36,5 @@ git diff --cached --name-only --diff-filter=ACM | while read file; do
 done
 
 if [[ $stop == true ]]; then
-    error "WTF" "$stop"
     exec false
 fi
