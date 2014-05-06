@@ -16,9 +16,7 @@ if [ ! -d '.git/hooks' ]; then
 fi
 
 if [ -e '.git/hooks/pre-commit' ]; then
-    echo "$(EXT_COLOR 196)There's already a pre-commit hook installed!$NO_COLOR";
-    echo "$(EXT_COLOR 202)Please remove first:$NO_COLOR $(pwd)/.git/hooks/pre-commit";
-    exec false;
+    echo "$(EXT_COLOR 196)There's already a pre-commit hook installed! Replacing!$NO_COLOR";
 fi
 
 script="{{BASE64}}"

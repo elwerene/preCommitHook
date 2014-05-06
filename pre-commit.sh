@@ -22,6 +22,11 @@ function error {
 
 root=$(git rev-parse --show-toplevel);
 
+if [[ -e "$root/.git/MERGE_MSG" ]]; then
+    echo "merge commit, not checking";
+    exec true;
+fi
+
 while read file; do
     if [[ ${file##*.} != "plist" && ${file##*.} != "zip"  && ${file##*.} != "mobileprovision" ]]; then
         tabs=$(grep $'\t' "$root/$file"|wc -l|awk {'print $1'});
