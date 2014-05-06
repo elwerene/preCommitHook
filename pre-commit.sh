@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 function EXT_COLOR () {
     echo "\033[38;5;$1m";
@@ -20,11 +20,11 @@ function error {
     echo "$(EXT_COLOR 242)$1:\t$(EXT_COLOR 196)$2$NO_COLOR";
 }
 
-cd $(git rev-parse --show-toplevel);
+root=$(git rev-parse --show-toplevel);
 
 while read file; do
     if [[ ${file##*.} != "plist" && ${file##*.} != "zip"  && ${file##*.} != "mobileprovision" ]]; then
-        tabs=$(grep $'\t' "$file"|wc -l|awk {'print $1'});
+        tabs=$(grep $'\t' "$root/$file"|wc -l|awk {'print $1'});
         if [[ $tabs -ne '0' ]]; then
             error "$file" "$tabs lines with tabs";
             stopCommit=true;
@@ -32,13 +32,13 @@ while read file; do
     fi
 
     if [[ ${file##*.} == "js" ]]; then
-        jsvalid=$($jshint "$file" |tail -n 1);
+        jsvalid=$($jshint "$root/$file" |tail -n 1);
         if [[ -n "$jsvalid" ]]; then
             error "$file" "contains invalid javascript code ($jsvalid)";
             stopCommit=true;
         fi
     fi
-done <<< $(git diff --cached --name-only --diff-filter=ACM);
+done <<< "`git diff --cached --name-only --diff-filter=ACM`";
 
 if [[ $stopCommit == true ]]; then
     exec false;
