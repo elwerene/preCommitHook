@@ -20,6 +20,8 @@ function error {
     echo "$(EXT_COLOR 242)$1:\t$(EXT_COLOR 196)$2$NO_COLOR";
 }
 
+cd $(git rev-parse --show-toplevel);
+
 while read file; do
     if [[ ${file##*.} != "plist" && ${file##*.} != "zip"  && ${file##*.} != "mobileprovision" ]]; then
         tabs=$(grep $'\t' "$file"|wc -l|awk {'print $1'});
