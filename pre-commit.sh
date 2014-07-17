@@ -28,7 +28,7 @@ if [[ -e "$root/.git/MERGE_MSG" ]]; then
 fi
 
 while read file; do
-    if [[ ${file##*.} != "json" &&${file##*.} != "plist" && ${file##*.} != "zip" && ${file##*.} != "mobileprovision" && ${file##*.} != "jpg" && ${file##*.} != "jpeg" && ${file##*.} != "gif" && ${file##*.} != "png"]]; then
+    if [[ ${file##*.} != "json" &&${file##*.} != "plist" && ${file##*.} != "zip" && ${file##*.} != "mobileprovision" && ${file##*.} != "jpg" && ${file##*.} != "jpeg" && ${file##*.} != "gif" && ${file##*.} != "png" ]]; then
         tabs=$(grep $'\t' "$root/$file"|wc -l|awk {'print $1'});
         if [[ $tabs -ne '0' ]]; then
             error "$file" "$tabs lines with tabs";
